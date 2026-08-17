@@ -358,11 +358,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const citacao = `${record.instituicao_fonte.toUpperCase()}. Nota de Pesar e Homenagem: ${record.nome_homenageado}. Publicado em ${formatarData(record.data_publicacao)}. Disponível em: <${record.url_origem || "#"}>. Acesso em: 17 ago. ${anoPub}.`;
     modalCitationText.textContent = citacao;
 
-    modalExternalLink.href = record.url_origem || "#";
-    if (!record.url_origem || record.url_origem === "#") {
-      modalExternalLink.style.display = "none";
-    } else {
+    const urlOrigemValida = record.url_origem && typeof record.url_origem === "string" && (record.url_origem.startsWith("http://") || record.url_origem.startsWith("https://"));
+    if (urlOrigemValida) {
+      modalExternalLink.href = record.url_origem;
       modalExternalLink.style.display = "inline-block";
+    } else {
+      modalExternalLink.href = "#";
+      modalExternalLink.style.display = "none";
     }
 
     modal.classList.add("active");

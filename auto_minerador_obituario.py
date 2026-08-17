@@ -117,25 +117,37 @@ def extrair_hash_registro(nome, titulo, instituicao=""):
     return hashlib.md5(base.encode('utf-8')).hexdigest()[:12]
 
 def carregar_dados_existentes(caminho_csv):
-    """Carrega dados existentes do CSV para evitar duplicidades."""
+    """Carrega dados existentes do CSV de forma blindada contra colunas excedentes."""
     registros = []
     if os.path.exists(caminho_csv):
         try:
             with open(caminho_csv, mode="r", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    registros.append(row)
+                    # Filtra estritamente as colunas canônicas, eliminando chaves None ou extras
+                    limpo = {col: str(row.get(col, "") or "").strip() for col in CSV_COLUNAS}
+                    if limpo.get("id") and limpo.get("nome_homenageado"):
+                        registros.append(limpo)
         except Exception:
             return []
     return registros
 
 def salvar_dados_csv(caminho_csv, registros):
-    """Salva a lista completa de registros no arquivo CSV particionado."""
+    """Salva a lista completa de registros no arquivo CSV particionado com quoting seguro."""
     with open(caminho_csv, mode="w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=CSV_COLUNAS)
+        writer = csv.DictWriter(
+            f, 
+            fieldnames=CSV_COLUNAS, 
+            extrasaction='ignore', 
+            quoting=csv.QUOTE_MINIMAL
+        )
         writer.writeheader()
         for r in registros:
-            writer.writerow(r)
+            item_sanitizado = {
+                col: str(r.get(col, "") or "").replace("\r", " ").replace("\n", " ").strip()
+                for col in CSV_COLUNAS
+            }
+            writer.writerow(item_sanitizado)
 
 def limpar_html(texto):
     """Higieniza tags HTML e normaliza espaçamentos."""

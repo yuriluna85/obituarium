@@ -105,6 +105,10 @@ obituarium/
 
 ## 6. Log de Atualizações (Changelog)
 
+- **17/08/2026 (v1.1.1)**: **Blindagem de Parsing CSV e Proteção contra Links Quebrados**:
+  - Correção definitiva da exceção `ValueError: dict contains fields not in fieldnames: None` no GitHub Actions mediante higienização de colunas e uso de `extrasaction='ignore'` com `quoting=csv.QUOTE_MINIMAL`.
+  - Implementação de validador de protocolo (`http://` ou `https://`) no `app.js` para suprimir links relativos falsos no Modal Memorial.
+  - Alinhamento e persistência de 36 registros cronológicos oficiais com retratos e metadados completos.
 - **17/08/2026 (v1.1.0)**: **Expansão para Mineração Global e Validação Estrita de URLs**:
   - Integração do motor de busca aberta com Google News RSS Brasil (`pt-BR`) e feeds institucionais.
   - Implementação do módulo `validador_fontes.py` para garantia de status `HTTP 200` e checagem de marcadores semânticos de luto e homenagem.
