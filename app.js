@@ -91,12 +91,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const headers = lines[0].map(h => h.trim());
     const records = [];
 
+    // Funcao interna para decodificar entidades HTML no frontend
+    function decodificarEntidades(str) {
+      if (!str) return "";
+      const txt = document.createElement("textarea");
+      txt.innerHTML = str;
+      let dec = txt.value;
+      // Substituir espacos nao quebraveis e entidades literais
+      dec = dec.replace(/&nbsp;/gi, " ").replace(/&quot;/gi, '"').replace(/&amp;/gi, '&');
+      return dec.trim();
+    }
+
     for (let i = 1; i < lines.length; i++) {
       const currentLine = lines[i];
       if (currentLine.length >= headers.length) {
         const item = {};
         headers.forEach((header, index) => {
-          item[header] = (currentLine[index] || "").trim();
+          let val = (currentLine[index] || "").trim();
+          val = decodificarEntidades(val);
+          item[header] = val;
         });
         records.push(item);
       }
@@ -105,97 +118,67 @@ document.addEventListener("DOMContentLoaded", () => {
     return records;
   }
 
-  // Base embutida de contingencia para execucao direta via file://
+  // Base embutida de contingencia com registros reais minerados
   const DADOS_EMBUTIDOS_FALLBACK = [
     {
-      "id": "7a8f9c1b2d3e",
-      "nome_homenageado": "Prof. Dr. Milton Santos",
-      "data_falecimento": "2001-06-24",
-      "data_publicacao": "2026-06-24 10:00:00",
-      "instituicao_fonte": "Universidade de São Paulo (USP)",
-      "tipo_nota": "Homenagem Póstuma",
-      "categoria_atuacao": "Ciência e Educação",
-      "estado_uf": "SP",
-      "municipio": "São Paulo",
-      "resumo_homenagem": "Homenagem da Faculdade de Filosofia Letras e Ciências Humanas ao geógrafo e professor emérito Milton Santos um dos maiores intelectuais brasileiros laureado internacionalmente com o Prêmio Vautrin Lud.",
-      "texto_integral": "A Faculdade de Filosofia Letras e Ciências Humanas da Universidade de São Paulo (FFLCH/USP) presta homenagem à memória e ao legado do professor emérito Milton Santos. Nascido em Brotas de Macaúbas na Bahia, Milton Santos revolucionou os estudos de geografia crítica e territorialidade no Brasil e no mundo.",
-      "url_origem": "https://jornal.usp.br/institucional/homenagem-milton-santos/",
-      "url_foto": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Milton_Santos.jpg/440px-Milton_Santos.jpg"
-    },
-    {
-      "id": "b4c1d2e3f4a5",
-      "nome_homenageado": "Profa. Dra. Maria Beatriz Nascimento",
-      "data_falecimento": "1995-01-28",
-      "data_publicacao": "2026-07-28 09:30:00",
-      "instituicao_fonte": "Universidade Federal do Rio de Janeiro (UFRJ)",
-      "tipo_nota": "Homenagem Póstuma",
-      "categoria_atuacao": "Educação e Sociedade",
-      "estado_uf": "RJ",
-      "municipio": "Rio de Janeiro",
-      "resumo_homenagem": "Registro memorial sobre a historiadora e ativista Beatriz Nascimento pioneira nos estudos sobre quilombos e territorialidades negras no Brasil.",
-      "texto_integral": "O Instituto de História da UFRJ rememora a trajetória ímpar da historiadora Maria Beatriz Nascimento. Graduada pela instituição, suas pesquisas sobre sistemas de quilombos e identidade espacial constituem referências seminais para a historiografia contemporânea.",
-      "url_origem": "https://ufrj.br/noticias/memoria-beatriz-nascimento/",
-      "url_foto": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Beatriz_Nascimento.jpg/440px-Beatriz_Nascimento.jpg"
-    },
-    {
-      "id": "c9d8e7f6a5b4",
-      "nome_homenageado": "Prof. Aziz Nacib Ab'Sáber",
-      "data_falecimento": "2012-03-16",
-      "data_publicacao": "2026-03-16 14:15:00",
-      "instituicao_fonte": "Sociedade Brasileira para o Progresso da Ciência (SBPC)",
-      "tipo_nota": "Homenagem Póstuma",
-      "categoria_atuacao": "Ciência e Meio Ambiente",
-      "estado_uf": "SP",
-      "municipio": "São Paulo",
-      "resumo_homenagem": "Homenagem ao geógrafo cientista e presidente de honra da SBPC Aziz Ab'Sáber mestre da geomorfologia brasileira e defensor dos biomas nacionais.",
-      "texto_integral": "A Sociedade Brasileira para o Progresso da Ciência homenageia o professor Aziz Nacib Ab'Sáber reconhecido por sua dedicação incansável ao conhecimento científico e à preservação dos ecossistemas brasileiros, destacando sua teoria dos domínios morfoclimáticos.",
-      "url_origem": "https://sbpcnet.org.br/noticias/homenagem-aziz-absaber/",
-      "url_foto": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Aziz_AbSaber.jpg/440px-Aziz_AbSaber.jpg"
-    },
-    {
-      "id": "e1f2a3b4c5d6",
-      "nome_homenageado": "Prof. Dr. Darcy Ribeiro",
-      "data_falecimento": "1997-02-17",
-      "data_publicacao": "2026-02-17 11:00:00",
-      "instituicao_fonte": "Universidade de Brasília (UnB)",
-      "tipo_nota": "Homenagem Póstuma",
-      "categoria_atuacao": "Educação e Cultura",
-      "estado_uf": "DF",
-      "municipio": "Brasília",
-      "resumo_homenagem": "A UnB presta tributo a Darcy Ribeiro seu fundador antropólogo educador e ensaísta fundamental para o pensamento social brasileiro.",
-      "texto_integral": "A Reitoria da Universidade de Brasília celebra a memória de seu fundador e primeiro reitor Darcy Ribeiro. Visionário da educação pública e superior no Brasil, Darcy dedicou sua vida aos povos originários e à universalização do ensino público de qualidade.",
-      "url_origem": "https://unb.br/noticias/memoria-darcy-ribeiro/",
-      "url_foto": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Darcy_Ribeiro.jpg/440px-Darcy_Ribeiro.jpg"
-    },
-    {
-      "id": "f3a2b1c4d5e6",
-      "nome_homenageado": "Profa. Maria Hilda Baqueiro Leão",
-      "data_falecimento": "2025-05-12",
-      "data_publicacao": "2025-05-12 16:45:00",
-      "instituicao_fonte": "Instituto Federal Baiano (IF Baiano)",
+      "id": "0909fe9a084f",
+      "nome_homenageado": "Arnaldo José de Barros e Silva",
+      "data_falecimento": "2026-08-17",
+      "data_publicacao": "2026-08-17 13:52:53",
+      "instituicao_fonte": "Sport Club do Recife",
       "tipo_nota": "Nota de Pesar",
-      "categoria_atuacao": "Educação e Gestão Pública",
-      "estado_uf": "BA",
-      "municipio": "Salvador",
-      "resumo_homenagem": "O IF Baiano manifesta profundo pesar pelo falecimento de servidora e pioneira no desenvolvimento do ensino técnico e profissionalizante na Bahia.",
-      "texto_integral": "O Instituto Federal de Educação Ciência e Tecnologia Baiano manifesta seu mais profundo pesar pelo falecimento da professora Maria Hilda Baqueiro Leão. A instituição expressa sinceras condolências aos familiares amigos e colegas de trabalho neste momento de luto.",
-      "url_origem": "https://ifbaiano.edu.br/portal/noticias/nota-de-pesar-prof-maria-hilda/",
-      "url_foto": "https://ifbaiano.edu.br/portal/wp-content/themes/ifbaiano/images/logo_vertical.png"
+      "categoria_atuacao": "Sociedade",
+      "estado_uf": "PE",
+      "municipio": "Recife",
+      "resumo_homenagem": "Nota de Pesar comunicando o falecimento de Arnaldo José de Barros e Silva emitida pelo Sport Club do Recife.",
+      "texto_integral": "O Sport Club do Recife manifesta profundo pesar pelo falecimento de Arnaldo José de Barros e Silva, prestando condolências e solidariedade a todos os familiares e amigos.",
+      "url_origem": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNdk1IQWF3U1VXWTZucmJkeGNURC1PSmcxYXl2N01UMjU3RnlVWURjOFdZZllEVmVwME90eFk4ODVPbl9tY3Rma0FBVHdQSGltQVROV1ktbkM3UVBHN19Cd1dhY0FaM0JhZ1FUTW1RemxTbm5Ra0lhWGZfZkNmTkN6RURZNzlsdzA?oc=5",
+      "url_foto": ""
     },
     {
-      "id": "a1b2c3d4e5f6",
-      "nome_homenageado": "Prof. Dr. Paulo Freire",
-      "data_falecimento": "1997-05-02",
-      "data_publicacao": "2026-05-02 08:00:00",
-      "instituicao_fonte": "Pontifícia Universidade Católica de São Paulo (PUC-SP)",
-      "tipo_nota": "Homenagem Póstuma",
-      "categoria_atuacao": "Educação e Filosofia",
-      "estado_uf": "SP",
-      "municipio": "São Paulo",
-      "resumo_homenagem": "Homenagem solene ao patrono da educação brasileira Paulo Freire educador que formulou a pedagogia da autonomia e a libertação pela leitura crítica do mundo.",
-      "texto_integral": "A PUC-SP homenageia a memória do professor Paulo Freire que integrou os quadros de pós-graduação da instituição. Seus ensinamentos sobre diálogo alteridade e emancipação humana permanecem vivos como patrimônio imaterial da educação mundial.",
-      "url_origem": "https://pucsp.br/noticias/homenagem-paulo-freire/",
-      "url_foto": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Paulo_Freire_1977.jpg/440px-Paulo_Freire_1977.jpg"
+      "id": "c6d1add4f0df",
+      "nome_homenageado": "Prof. Emérito José Jerônimo de Morais",
+      "data_falecimento": "2026-08-17",
+      "data_publicacao": "2026-08-17 13:53:00",
+      "instituicao_fonte": "Universidade Estadual de Feira de Santana (UEFS)",
+      "tipo_nota": "Nota de Pesar",
+      "categoria_atuacao": "Educação e Ciência",
+      "estado_uf": "BA",
+      "municipio": "Feira de Santana",
+      "resumo_homenagem": "A Universidade Estadual de Feira de Santana manifesta profundo pesar pelo falecimento do professor emérito José Jerônimo de Morais.",
+      "texto_integral": "A Universidade Estadual de Feira de Santana (UEFS) comunica com pesar o falecimento do professor emérito José Jerônimo de Morais, destacando sua inestimável contribuição acadêmica e científica.",
+      "url_origem": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQSGZhUlhUbTB2QjZlaVZrZXlOb29kU1VwX0hYdXhlMHBIQzR4ckJKSU5YbjZuaDVQWWk4ZFJGOXdZc0JmaWVBWEhwS1V3b0xGektZZVA0aTdxUTZLNFJBQUdIY05FdjJWMDdSdlB4dVNyVE50ZnhRZWNJem5rR2RxOXU1WHVlX3JzeUxSWDZWTVZhdw?oc=5",
+      "url_foto": ""
+    },
+    {
+      "id": "4e2cd4df809f",
+      "nome_homenageado": "Rafael Brito de Sá",
+      "data_falecimento": "2026-08-17",
+      "data_publicacao": "2026-08-17 13:53:01",
+      "instituicao_fonte": "OAB/AC",
+      "tipo_nota": "Nota de Pesar",
+      "categoria_atuacao": "Sociedade",
+      "estado_uf": "AC",
+      "municipio": "Rio Branco",
+      "resumo_homenagem": "A Ordem dos Advogados do Brasil Seccional Acre manifesta pesar pelo falecimento de Rafael Brito de Sá.",
+      "texto_integral": "A OAB/AC expressa suas sinceras condolências à família e amigos de Rafael Brito de Sá neste momento de dor e consternação.",
+      "url_origem": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE5kbDlZVU1Xc2ZNZVRVd0ZId3RKb1NIUzQ3TEIwdDRyRUVzb2FudHlEVTBLSUl6N1hDc1BBRXl4RDZyNUpjZlFITFlaOHp2c0FzUF9OY2stV1ZmbjZQV08zTnFBSEk?oc=5",
+      "url_foto": ""
+    },
+    {
+      "id": "6ced56721b55",
+      "nome_homenageado": "José Baka Filho (Ex-Prefeito)",
+      "data_falecimento": "2026-08-17",
+      "data_publicacao": "2026-08-17 13:53:13",
+      "instituicao_fonte": "Município de Paranaguá / Banda B",
+      "tipo_nota": "Luto Oficial",
+      "categoria_atuacao": "Gestão Pública",
+      "estado_uf": "PR",
+      "municipio": "Paranaguá",
+      "resumo_homenagem": "Ex-prefeito de Paranaguá morre aos 64 anos e município decreta três dias de luto oficial.",
+      "texto_integral": "O município de Paranaguá decretou luto oficial de três dias em virtude do falecimento do ex-prefeito José Baka Filho, prestando tributo à sua trajetória de dedicação à cidade.",
+      "url_origem": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPQ1U3UmF4SjE5VTNQRW02bGJ3ak85dXhnQnZkMDZkQXllaGFuOWZLYlRQdDM4RHlvQlRGRUhTaE85LXJ5SzcyX1hoRWRHdUVoc05nVXJSd2dISHN2S1RrSXhpUVJsWUdBTVBocHZZSGMxVFZ0MDlxM2thaVVwcnRaQjFpWU5VUlZMOHM1eUtjUjZyLUsydC1pYk83NkJNcFR3Q2JDODZyMExrQkIyenFONzdxdGVwWmVhdzIzZW9Ob1FpcFl3UEpEc3FCTXlXV1dKbnF4NHR30gHbAUFVX3lxTE1GZV80ek9GRnNRTWdtSGNnQmN6RUNfYXFPeFVSLUFzOFpEWVZhRTZLazMwbkV0RUQ5NlIzZnVLdG1CNm9Ja0dfYmN0YkY1U1JlMmI3M3lpQ3FNWDl4aU9xOTJUX2JydE9hNFFuMzEtcmt3VWF6a0hxaFJuTXhDN0JSOUo1ekFWNldIQ0VlYVJMYk1zTEhYTjBRSmUxWEFwamtITFd3allCN2RfQ2l5WnI0TEJvcmNGSGxDb1JSV3p5RV84X0x6VVdkc3B3cm0yQXA4RGZvNHVqRC1HQQ?oc=5",
+      "url_foto": ""
     }
   ];
 
@@ -294,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="card-body">
           <div class="portrait-wrapper">
-            <img class="portrait-img" src="${escapeHTML(fotoUrl)}" alt="Retrato de ${escapeHTML(record.nome_homenageado)}" loading="lazy">
+            <img class="portrait-img" src="${escapeHTML(fotoUrl)}" alt="Retrato de ${escapeHTML(record.nome_homenageado)}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'100\\' height=\\'120\\' viewBox=\\'0 0 100 120\\'%3E%3Crect width=\\'100\\' height=\\'120\\' fill=\\'%231E293B\\'/%3E%3Cpath d=\\'M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z\\' fill=\\'%2394A3B8\\'/%3E%3C/svg%3E';">
           </div>
           <div class="card-info">
             <h2 class="honoree-name">${escapeHTML(record.nome_homenageado)}</h2>

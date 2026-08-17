@@ -6,14 +6,20 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   minerar_e_atualizar:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout do Repositório
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Configurar Python
@@ -31,8 +37,13 @@ jobs:
           python auto_minerador_obituario.py
 
       - name: Commit e Push das Atualizações de Dados
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Actions Bot"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git add data/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): atualizacao global da base de notas de pesar [skip ci]" && git push origin main)
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(data): atualizacao global da base de notas de pesar [skip ci]"
+            git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
+          fi

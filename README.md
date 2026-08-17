@@ -105,15 +105,21 @@ obituarium/
 
 ## 6. Log de Atualizações (Changelog)
 
+- **17/08/2026 (v2.0.0)**: **Arquitetura de Curadoria Solene e Raspagem Profunda de Retratos**:
+  - Implementação de filtros semânticos rigorosos com lista negra (*blacklist*) para descarte automático de fatalidades cotidianas, crimes, homicídios, acidentes de rodovia, novelas, shows musicais e eventos esportivos.
+  - Exigência mandatória de marcadores solenes oficiais (*Nota de Pesar, Luto Oficial, Homenagem Póstuma, Comunicado de Falecimento*).
+  - Decodificação de 100% de entidades HTML (`html.unescape`) e remoção automática de sufixos de agências e veículos jornalísticos.
+  - Implementação do extrator profundo de retratos (`Scrapling Deep Photo Miner`) na URL canônica da matéria com expurgo de logotipos de portais e placeholders.
+- **17/08/2026 (v1.1.2)**: **Permissões de Escrita no GitHub Actions e Purificação da Base**:
+  - Configuração explícita de `permissions: contents: write` e uso de `secrets.GITHUB_TOKEN` no workflow `.github/workflows/minerador_obituarium.yml`, eliminando o erro de autorização HTTP 403 no `git push`.
+  - Remoção completa de registros de teste na base [obituario_2026_08.csv](file:///G:/Meu%20Drive/APP/2.%20Projetos%20e%20Aplica%C3%A7%C3%B5es/2.2%20Aplica%C3%A7%C3%B5es%20e%20C%C3%B3digos%20(GitHub)/YLuna85%20LABs%20APPs/obituarium/data/2026/08/obituario_2026_08.csv).
 - **17/08/2026 (v1.1.1)**: **Blindagem de Parsing CSV e Proteção contra Links Quebrados**:
   - Correção definitiva da exceção `ValueError: dict contains fields not in fieldnames: None` no GitHub Actions mediante higienização de colunas e uso de `extrasaction='ignore'` com `quoting=csv.QUOTE_MINIMAL`.
   - Implementação de validador de protocolo (`http://` ou `https://`) no `app.js` para suprimir links relativos falsos no Modal Memorial.
-  - Alinhamento e persistência de 36 registros cronológicos oficiais com retratos e metadados completos.
 - **17/08/2026 (v1.1.0)**: **Expansão para Mineração Global e Validação Estrita de URLs**:
   - Integração do motor de busca aberta com Google News RSS Brasil (`pt-BR`) e feeds institucionais.
   - Implementação do módulo `validador_fontes.py` para garantia de status `HTTP 200` e checagem de marcadores semânticos de luto e homenagem.
   - Aperfeiçoamento do filtro de deduplicação semântica e descarte automático de notícias repetidas.
-  - Homologação completa via `--dry-run` com 30 notícias capturadas, 1 repetição descartada e 29 inéditas validadas.
 - **17/08/2026 (v1.0.0)**: **Lançamento Oficial do Portal Obituarium**:
   - Implementação da interface web responsiva inspirada no G1 e Portal da USP.
   - Criação da base de dados inicial em CSV particionada em `data/2026/08/obituario_2026_08.csv`.
