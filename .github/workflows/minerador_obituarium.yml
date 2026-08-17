@@ -2,8 +2,8 @@ name: Minerador Autônomo Obituarium
 
 on:
   schedule:
-    # Executa a cada 6 horas
-    - cron: '0 */6 * * *'
+    # Executa duas vezes ao dia: 00:00 BRT (03:00 UTC) e 12:00 BRT (15:00 UTC)
+    - cron: '0 3,15 * * *'
   workflow_dispatch:
 
 permissions:

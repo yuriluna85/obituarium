@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const state = {
     records: [],
     filteredRecords: [],
+    currentPage: 1,
+    itemsPerPage: 10,
     currentTheme: "light",
     fontSizeMultiplier: 1.0
   };
@@ -25,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultsCount = document.getElementById("results-count");
   const statTotal = document.getElementById("stat-total");
   const statFontes = document.getElementById("stat-fontes");
+  const paginationNav = document.getElementById("pagination-nav");
+  const paginationContainer = document.getElementById("pagination-container");
 
   // Elementos do Modal
   const modal = document.getElementById("memorial-modal");
@@ -182,7 +186,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
-  // Carregamento de dados com fallback
+  // Funcao para ordenar registros do mais recente ao mais antigo
+  function ordenarRegistrosCronologico(lista) {
+    return [...lista].sort((a, b) => {
+      const dataA = a.data_publicacao || a.data_coleta || a.data_falecimento || "1970-01-01 00:00:00";
+      const dataB = b.data_publicacao || b.data_coleta || b.data_falecimento || "1970-01-01 00:00:00";
+      return dataB.localeCompare(dataA);
+    });
+  }
+
+  // Carregamento de dados com fallback e ordenacao cronologica
   async function carregarBaseObituario() {
     try {
       const response = await fetch("data/2026/08/obituario_2026_08.csv");
@@ -190,16 +203,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const text = await response.text();
       const records = parseCSV(text);
       if (records.length > 0) {
-        state.records = records;
+        state.records = ordenarRegistrosCronologico(records);
       } else {
-        state.records = DADOS_EMBUTIDOS_FALLBACK;
+        state.records = ordenarRegistrosCronologico(DADOS_EMBUTIDOS_FALLBACK);
       }
     } catch (e) {
       console.warn("Utilizando base de contingencia embutida:", e);
-      state.records = DADOS_EMBUTIDOS_FALLBACK;
+      state.records = ordenarRegistrosCronologico(DADOS_EMBUTIDOS_FALLBACK);
     }
 
     state.filteredRecords = [...state.records];
+    state.currentPage = 1;
     popularFiltros();
     atualizarEstatisticas();
     renderizarCards();
@@ -246,22 +260,36 @@ document.addEventListener("DOMContentLoaded", () => {
     statFontes.textContent = fontesUnicas.size;
   }
 
-  // Renderizacao dos cartoes no grid
+  // Renderizacao dos cartoes no grid com Paginacao (10 cards por subpagina)
   function renderizarCards() {
     memorialGrid.innerHTML = "";
-    resultsCount.textContent = `${state.filteredRecords.length} registro(s) encontrado(s)`;
+    const totalItens = state.filteredRecords.length;
+    const totalPaginas = Math.ceil(totalItens / state.itemsPerPage) || 1;
 
-    if (state.filteredRecords.length === 0) {
+    // Ajusta a pagina atual se ultrapassar o limite
+    if (state.currentPage > totalPaginas) {
+      state.currentPage = totalPaginas;
+    }
+
+    resultsCount.textContent = `${totalItens} registro(s) encontrado(s) • Página ${state.currentPage} de ${totalPaginas}`;
+
+    if (totalItens === 0) {
       memorialGrid.innerHTML = `
         <div style="grid-column: 1 / -1; padding: 48px; text-align: center; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
           <p style="font-family: var(--font-title); font-size: 1.25rem; color: var(--text-main); margin-bottom: 8px;">Nenhum registro localizado</p>
           <p style="font-size: 0.875rem; color: var(--text-muted);">Tente ajustar os termos da busca ou limpar os filtros aplicados.</p>
         </div>
       `;
+      if (paginationNav) paginationNav.style.display = "none";
       return;
     }
 
-    state.filteredRecords.forEach(record => {
+    // Fatiamento dos 10 registros da pagina atual
+    const inicio = (state.currentPage - 1) * state.itemsPerPage;
+    const fim = inicio + state.itemsPerPage;
+    const registrosPagina = state.filteredRecords.slice(inicio, fim);
+
+    registrosPagina.forEach(record => {
       const card = document.createElement("article");
       card.className = "memorial-card";
       card.tabIndex = 0;
@@ -300,9 +328,100 @@ document.addEventListener("DOMContentLoaded", () => {
 
       memorialGrid.appendChild(card);
     });
+
+    renderizarControlesPaginacao(totalPaginas);
   }
 
-  // Filtragem dinamica
+  // Renderiza a barra de paginacao solene
+  function renderizarControlesPaginacao(totalPaginas) {
+    if (!paginationNav || !paginationContainer) return;
+
+    if (totalPaginas <= 1) {
+      paginationNav.style.display = "none";
+      return;
+    }
+
+    paginationNav.style.display = "flex";
+    paginationContainer.innerHTML = "";
+
+    // Botao Anterior
+    const btnPrev = document.createElement("button");
+    btnPrev.className = "page-btn";
+    btnPrev.innerHTML = "&larr; Anterior";
+    btnPrev.type = "button";
+    btnPrev.disabled = state.currentPage === 1;
+    btnPrev.setAttribute("aria-label", "Ir para a página anterior");
+    btnPrev.addEventListener("click", () => {
+      if (state.currentPage > 1) {
+        state.currentPage--;
+        renderizarCards();
+        rolarParaGrid();
+      }
+    });
+    paginationContainer.appendChild(btnPrev);
+
+    // Botoes de Paginas
+    for (let p = 1; p <= totalPaginas; p++) {
+      // Exibe todas se forem poucas paginas (ate 7), senao exibe primeira, ultima e adjacentes
+      if (
+        totalPaginas <= 7 || 
+        p === 1 || 
+        p === totalPaginas || 
+        Math.abs(p - state.currentPage) <= 1
+      ) {
+        const btnPage = document.createElement("button");
+        btnPage.className = `page-btn ${p === state.currentPage ? "active" : ""}`;
+        btnPage.textContent = p;
+        btnPage.type = "button";
+        btnPage.setAttribute("aria-label", `Ir para a página ${p}`);
+        if (p === state.currentPage) {
+          btnPage.setAttribute("aria-current", "page");
+        }
+        btnPage.addEventListener("click", () => {
+          if (state.currentPage !== p) {
+            state.currentPage = p;
+            renderizarCards();
+            rolarParaGrid();
+          }
+        });
+        paginationContainer.appendChild(btnPage);
+      } else if (
+        (p === 2 && state.currentPage > 3) || 
+        (p === totalPaginas - 1 && state.currentPage < totalPaginas - 2)
+      ) {
+        const ellipsis = document.createElement("span");
+        ellipsis.className = "page-ellipsis";
+        ellipsis.textContent = "...";
+        paginationContainer.appendChild(ellipsis);
+      }
+    }
+
+    // Botao Proxima
+    const btnNext = document.createElement("button");
+    btnNext.className = "page-btn";
+    btnNext.innerHTML = "Próxima &rarr;";
+    btnNext.type = "button";
+    btnNext.disabled = state.currentPage === totalPaginas;
+    btnNext.setAttribute("aria-label", "Ir para a próxima página");
+    btnNext.addEventListener("click", () => {
+      if (state.currentPage < totalPaginas) {
+        state.currentPage++;
+        renderizarCards();
+        rolarParaGrid();
+      }
+    });
+    paginationContainer.appendChild(btnNext);
+  }
+
+  // Rolagem suave para o topo do grid de homenagens
+  function rolarParaGrid() {
+    const gridTop = document.getElementById("main-content");
+    if (gridTop) {
+      gridTop.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  // Filtragem dinamica com reset de pagina
   function aplicarFiltros() {
     const termo = searchInput.value.toLowerCase().trim();
     const ufSel = filterUf.value;
@@ -323,6 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return matchBusca && matchUf && matchTipo && matchCat;
     });
 
+    state.currentPage = 1;
     renderizarCards();
   }
 

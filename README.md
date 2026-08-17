@@ -105,6 +105,10 @@ obituarium/
 
 ## 6. Log de Atualizações (Changelog)
 
+- **17/08/2026 (v2.1.0)**: **Ordenação Cronológica Estrita, Agendamento 2x/Dia e Paginação Dinâmica (10 Cards)**:
+  - Implementação de ordenação cronológica decrescente (*Newest First*) tanto no backend Python (`auto_minerador_obituario.py`) ao salvar a base CSV quanto no carregamento do frontend (`app.js`).
+  - Configuração do workflow GitHub Actions (`minerador_obituarium.yml`) para disparo automático 2 vezes ao dia: às 00:00 BRT (`03:00 UTC`) e às 12:00 BRT (`15:00 UTC`), via `cron: '0 3,15 * * *'`.
+  - Implementação de sistema de paginação dinâmico no `index.html`, `style.css` e `app.js` renderizando 10 cards por subpágina com navegação fluida, botões numerados, rolagem suave para o topo e recálculo automático em filtros.
 - **17/08/2026 (v2.0.0)**: **Arquitetura de Curadoria Solene e Raspagem Profunda de Retratos**:
   - Implementação de filtros semânticos rigorosos com lista negra (*blacklist*) para descarte automático de fatalidades cotidianas, crimes, homicídios, acidentes de rodovia, novelas, shows musicais e eventos esportivos.
   - Exigência mandatória de marcadores solenes oficiais (*Nota de Pesar, Luto Oficial, Homenagem Póstuma, Comunicado de Falecimento*).
