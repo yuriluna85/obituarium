@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obituarium — Portal de Notas de Pesar e Memória Pública</title>
+  <meta name="description" content="Portal público de catalogação, indexação e busca de notas de pesar, homenagens póstumas e registros memoriais de instituições no Brasil.">
+  
+  <!-- Fontes Google: Merriweather e Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Barra de Acessibilidade Superior -->
+  <aside class="accessibility-bar" aria-label="Controles de Acessibilidade">
+    <div class="accessibility-container">
+      <span>Portal de Memória Pública e Cidadania</span>
+      <div class="a11y-controls">
+        <button id="btn-font-dec" class="btn-a11y" title="Diminuir tamanho da fonte" aria-label="Diminuir fonte">A -</button>
+        <button id="btn-font-inc" class="btn-a11y" title="Aumentar tamanho da fonte" aria-label="Aumentar fonte">A +</button>
+        <button id="btn-high-contrast" class="btn-a11y" title="Alternar Alto Contraste" aria-label="Alto Contraste">Alto Contraste</button>
+        <button id="btn-theme-toggle" class="btn-a11y" title="Alternar Modo Solene Noturno" aria-label="Modo Noturno">Modo Noturno</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Cabecalho Institucional -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <div class="brand-area">
+        <a href="index.html" class="brand-title" aria-label="Página Inicial do Obituarium">OBITUARIUM</a>
+        <span class="brand-subtitle">Registro Histórico e Homenagens Públicas no Brasil</span>
+      </div>
+      <div class="header-stats" aria-label="Estatísticas do Acervo">
+        <div class="stat-item">
+          <span id="stat-total" class="stat-number">--</span>
+          <span class="stat-label">Registros Catalogados</span>
+        </div>
+        <div class="stat-item">
+          <span id="stat-fontes" class="stat-number">--</span>
+          <span class="stat-label">Instituições Emissoras</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Painel de Busca e Filtros Multifacetados -->
+  <section class="search-section" aria-label="Filtros e Mecanismo de Busca">
+    <div class="search-container">
+      <div class="search-bar-wrapper">
+        <label for="search-input" class="sr-only" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;">Buscar por nome, instituição, cargo ou palavras-chave</label>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="Digite o nome do homenageado, universidade, cidade ou palavra-chave..." 
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label for="filter-uf" class="filter-label">Estado (UF)</label>
+          <select id="filter-uf" class="filter-select">
+            <option value="todos">Todos os Estados</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-tipo" class="filter-label">Tipo de Publicação</label>
+          <select id="filter-tipo" class="filter-select">
+            <option value="todos">Todos os Tipos</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-categoria" class="filter-label">Área de Atuação</label>
+          <select id="filter-categoria" class="filter-select">
+            <option value="todos">Todas as Áreas</option>
+          </select>
+        </div>
+
+        <button id="btn-reset" class="btn-reset-filters" type="button">Limpar Filtros</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conteudo Principal e Grade Bento Grid -->
+  <main id="main-content" class="main-content" role="main">
+    <div class="results-header">
+      <h1 class="results-title">Notas de Pesar e Homenagens</h1>
+      <span id="results-count" class="results-count">Carregando acervo...</span>
+    </div>
+
+    <!-- Grid de Cartoes Memoriais -->
+    <div id="memorial-grid" class="memorial-grid" aria-live="polite">
+      <!-- Inserido dinamicamente via app.js -->
+    </div>
+  </main>
+
+  <!-- Modal de Visualizacao Solene (Memorial View) -->
+  <div id="memorial-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-name" aria-hidden="true">
+    <div class="modal-container">
+      <div class="modal-header">
+        <span id="modal-badge-tipo" class="modal-header-title">Homenagem Póstuma</span>
+        <button id="btn-close-modal" class="btn-close-modal" aria-label="Fechar janela memorial">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h2 id="modal-name" class="modal-honoree-name">Nome do Homenageado</h2>
+        
+        <div class="modal-meta-grid">
+          <div class="modal-meta-item">
+            <strong>Instituição Emissora</strong>
+            <span id="modal-source">--</span>
+          </div>
+          <div class="modal-meta-item">
+            <strong>Localidade</strong>
+            <span id="modal-location">--</span>
+          </div>
+          <div class="modal-meta-item">
+            <strong>Data do Falecimento</strong>
+            <span id="modal-date-death">--</span>
+          </div>
+          <div class="modal-meta-item">
+            <strong>Data de Publicação</strong>
+            <span id="modal-date-pub">--</span>
+          </div>
+        </div>
+
+        <div class="modal-text-content" id="modal-full-text">
+          <!-- Texto integral da nota -->
+        </div>
+
+        <div class="modal-citation-box">
+          <strong>Como citar este registro:</strong>
+          <p id="modal-citation-text">--</p>
+        </div>
+
+        <div class="modal-actions">
+          <button id="btn-copy-citation" class="btn-secondary" type="button">Copiar Citação ABNT</button>
+          <a id="modal-external-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary-link">Acessar Documento Oficial</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodape Institucional -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-container">
+      <div class="footer-text">
+        <p><strong>Obituarium</strong> — Sistema de Indexação e Memória Pública</p>
+        <p>Desenvolvido para preservação histórica, transparência e consulta cidadã.</p>
+      </div>
+      <div class="footer-tech">
+        <p>Padrão ABNT2 | Acessibilidade WCAG 2.1 AAA | UTF-8</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+playwright
+imageio-ffmpeg
+flask
+flask-cors
+requests
+pillow
+scrapling
+beautifulsoup4
+lxml

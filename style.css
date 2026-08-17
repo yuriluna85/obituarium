@@ -1,0 +1,697 @@
+:root {
+  /* Camada 1: Tokens Primitivos e Escalas HSL */
+  --font-title: 'Merriweather', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  /* Moduladores de Espacamento (8px Grid) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Raios de Borda */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Transicoes */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Camada 2: Tokens Semanticos (Modo Marmore Solene - Padrao) */
+  --color-primary: #7F1135; /* Bordo Nobre Memorial */
+  --color-primary-hover: #9E1742;
+  --color-accent: #1E293B; /* Azul Ardosia Institucional */
+  --color-accent-gold: #B45309; /* Ouro Antigo */
+
+  --bg-body: #F8F9FA;
+  --bg-surface: #FFFFFF;
+  --bg-surface-secondary: #F1F5F9;
+  --bg-header: #1E293B;
+  
+  --text-main: #0F172A;
+  --text-muted: #475569;
+  --text-inverse: #FFFFFF;
+  --text-header: #F8FAFC;
+
+  --border-color: #E2E8F0;
+  --border-focus: #7F1135;
+  --focus-ring: 3px solid rgba(127, 17, 53, 0.4);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
+  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Modo Noturno Solene */
+[data-theme="dark"] {
+  --bg-body: #0A0D14;
+  --bg-surface: #121722;
+  --bg-surface-secondary: #1A2232;
+  --bg-header: #0F141F;
+
+  --text-main: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+  --text-header: #F8FAFC;
+
+  --border-color: #242E42;
+  --border-focus: #F43F5E;
+  --focus-ring: 3px solid rgba(244, 63, 94, 0.4);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.7);
+}
+
+/* Alto Contraste para Baixa Visao */
+.high-contrast {
+  --bg-body: #000000 !important;
+  --bg-surface: #000000 !important;
+  --bg-surface-secondary: #111111 !important;
+  --bg-header: #000000 !important;
+
+  --text-main: #FFFFFF !important;
+  --text-muted: #EEEEEE !important;
+  --text-inverse: #000000 !important;
+  --text-header: #FFFFFF !important;
+
+  --border-color: #FFFFFF !important;
+  --border-focus: #FFFF00 !important;
+  --focus-ring: 4px solid #FFFF00 !important;
+  --color-primary: #FFFF00 !important;
+  --color-accent-gold: #FFFF00 !important;
+}
+
+/* Reset e Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+  overflow-x: hidden;
+}
+
+/* Barra de Acessibilidade Superior */
+.accessibility-bar {
+  background-color: #0F172A;
+  color: #E2E8F0;
+  padding: var(--space-1) var(--space-4);
+  font-size: 0.8125rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accessibility-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.a11y-controls {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.btn-a11y {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #F8FAFC;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background var(--transition-fast);
+}
+
+.btn-a11y:hover, .btn-a11y:focus-visible {
+  background: rgba(255, 255, 255, 0.15);
+  outline: 2px solid #FFFFFF;
+}
+
+/* Cabecalho Principal */
+.site-header {
+  background-color: var(--bg-header);
+  color: var(--text-header);
+  padding: var(--space-6) var(--space-4);
+  border-bottom: 3px solid var(--color-primary);
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.brand-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-family: var(--font-title);
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.brand-subtitle {
+  font-size: 0.875rem;
+  color: #CBD5E1;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: 2px;
+}
+
+.header-stats {
+  display: flex;
+  gap: var(--space-6);
+  background: rgba(255, 255, 255, 0.06);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  color: #94A3B8;
+  letter-spacing: 0.05em;
+}
+
+/* Painel de Busca e Filtros */
+.search-section {
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-6) var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-bar-wrapper {
+  position: relative;
+  margin-bottom: var(--space-4);
+}
+
+.search-input {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.125rem;
+  font-family: var(--font-body);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-body);
+  color: var(--text-main);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(127, 17, 53, 0.15);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  background-color: var(--bg-surface-secondary);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+.btn-reset-filters {
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  height: 38px;
+  align-self: flex-end;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-reset-filters:hover {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+/* Conteudo Principal e Grade de Homenagens */
+.main-content {
+  max-width: 1200px;
+  margin: var(--space-8) auto;
+  padding: 0 var(--space-4);
+  flex: 1;
+  width: 100%;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.results-title {
+  font-family: var(--font-title);
+  font-size: 1.5rem;
+  color: var(--text-main);
+}
+
+.results-count {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.memorial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-6);
+}
+
+/* Cartao Memorial */
+.memorial-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.memorial-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
+}
+
+.card-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--bg-surface-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.75rem;
+}
+
+.badge-tipo {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+}
+
+.badge-uf {
+  background-color: var(--border-color);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.card-body {
+  padding: var(--space-4);
+  display: flex;
+  gap: var(--space-4);
+  flex: 1;
+}
+
+.portrait-wrapper {
+  width: 90px;
+  height: 115px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background-color: var(--bg-surface-secondary);
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
+.portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.honoree-name {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: var(--space-1);
+  line-height: 1.3;
+}
+
+.source-institution {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-accent-gold);
+  margin-bottom: var(--space-2);
+}
+
+.dates-row {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+  display: flex;
+  gap: var(--space-2);
+}
+
+.card-summary {
+  font-size: 0.875rem;
+  color: var(--text-main);
+  line-height: 1.5;
+  margin-bottom: var(--space-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--bg-surface-secondary);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-read-more {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  padding: 6px 14px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.btn-read-more:hover, .btn-read-more:focus-visible {
+  background-color: var(--color-primary-hover);
+  outline: var(--focus-ring);
+}
+
+/* Modal de Visualizacao Solene (Memorial View) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 13, 20, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-normal);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-container {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  max-width: 720px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-modal);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-surface-secondary);
+}
+
+.modal-header-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.btn-close-modal:hover {
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: var(--space-6);
+}
+
+.modal-honoree-name {
+  font-family: var(--font-title);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: var(--space-2);
+}
+
+.modal-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background-color: var(--bg-surface-secondary);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-6);
+  font-size: 0.8125rem;
+}
+
+.modal-meta-item strong {
+  display: block;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.modal-text-content {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-main);
+  margin-bottom: var(--space-6);
+}
+
+.modal-citation-box {
+  background-color: var(--bg-body);
+  border-left: 4px solid var(--color-primary);
+  padding: var(--space-3);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-bottom: var(--space-6);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--space-4);
+}
+
+.btn-secondary {
+  padding: 8px 16px;
+  background-color: var(--bg-surface-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+.btn-primary-link {
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-primary-link:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Rodape Institucional */
+.site-footer {
+  background-color: var(--bg-header);
+  color: #94A3B8;
+  padding: var(--space-8) var(--space-4);
+  font-size: 0.875rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.footer-text {
+  line-height: 1.5;
+}
+
+/* Responsividade Mobile-First */
+@media (max-width: 768px) {
+  .brand-title {
+    font-size: 1.75rem;
+  }
+
+  .header-stats {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .memorial-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-body {
+    flex-direction: column;
+  }
+
+  .portrait-wrapper {
+    width: 100%;
+    height: 160px;
+  }
+
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn-reset-filters {
+    width: 100%;
+  }
+
+  .modal-container {
+    max-height: 95vh;
+  }
+}
