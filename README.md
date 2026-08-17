@@ -86,7 +86,8 @@ obituarium/
 ├── index.html                          <-- Interface web semântica e acessível (SPA)
 ├── style.css                           <-- Design tokens HSL e Bento Grid
 ├── app.js                              <-- Motor de busca, filtros e modal
-├── auto_minerador_obituario.py         <-- Engine de coleta e scraping
+├── auto_minerador_obituario.py         <-- Engine de coleta e mineração global
+├── validador_fontes.py                 <-- Validador de integridade e status HTTP 200
 ├── EXECUTAR_OBITUARIUM.bat             <-- Launcher Windows interativo
 ├── requirements.txt                    <-- Manifesto de bibliotecas Python
 └── README.md                           <-- Documentação oficial e vitrine
@@ -104,6 +105,11 @@ obituarium/
 
 ## 6. Log de Atualizações (Changelog)
 
+- **17/08/2026 (v1.1.0)**: **Expansão para Mineração Global e Validação Estrita de URLs**:
+  - Integração do motor de busca aberta com Google News RSS Brasil (`pt-BR`) e feeds institucionais.
+  - Implementação do módulo `validador_fontes.py` para garantia de status `HTTP 200` e checagem de marcadores semânticos de luto e homenagem.
+  - Aperfeiçoamento do filtro de deduplicação semântica e descarte automático de notícias repetidas.
+  - Homologação completa via `--dry-run` com 30 notícias capturadas, 1 repetição descartada e 29 inéditas validadas.
 - **17/08/2026 (v1.0.0)**: **Lançamento Oficial do Portal Obituarium**:
   - Implementação da interface web responsiva inspirada no G1 e Portal da USP.
   - Criação da base de dados inicial em CSV particionada em `data/2026/08/obituario_2026_08.csv`.

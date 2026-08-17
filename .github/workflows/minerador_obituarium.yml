@@ -2,8 +2,8 @@ name: Minerador Autônomo Obituarium
 
 on:
   schedule:
-    # Executa a cada 12 horas (às 00:00 e 12:00 UTC)
-    - cron: '0 0,12 * * *'
+    # Executa a cada 6 horas
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -21,12 +21,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Instalar Dependências
+      - name: Instalar Dependências do Scrapling e Scraping
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 lxml
+          pip install requests beautifulsoup4 lxml scrapling
 
-      - name: Executar Mineração de Notas de Pesar
+      - name: Executar Mineração Global de Notas de Pesar
         run: |
           python auto_minerador_obituario.py
 
@@ -35,4 +35,4 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions Bot"
           git add data/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): atualizacao automatica da base de notas de pesar [skip ci]" && git push origin main)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): atualizacao global da base de notas de pesar [skip ci]" && git push origin main)
