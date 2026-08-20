@@ -260,20 +260,13 @@ document.addEventListener("DOMContentLoaded", () => {
     statFontes.textContent = fontesUnicas.size;
   }
 
-  // Renderizacao dos cartoes no grid com Paginacao (10 cards por subpagina)
+  // Renderizacao com Hierarquia Visual Editorial (1 Super Destaque, 4 Intermediários e Lista Paginada)
   function renderizarCards() {
     memorialGrid.innerHTML = "";
     const totalItens = state.filteredRecords.length;
-    const totalPaginas = Math.ceil(totalItens / state.itemsPerPage) || 1;
-
-    // Ajusta a pagina atual se ultrapassar o limite
-    if (state.currentPage > totalPaginas) {
-      state.currentPage = totalPaginas;
-    }
-
-    resultsCount.textContent = `${totalItens} registro(s) encontrado(s) • Página ${state.currentPage} de ${totalPaginas}`;
 
     if (totalItens === 0) {
+      resultsCount.textContent = "0 registros encontrados";
       memorialGrid.innerHTML = `
         <div style="grid-column: 1 / -1; padding: 48px; text-align: center; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
           <p style="font-family: var(--font-title); font-size: 1.25rem; color: var(--text-main); margin-bottom: 8px;">Nenhum registro localizado</p>
@@ -284,7 +277,156 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Fatiamento dos 10 registros da pagina atual
+    const temFiltroAtivo = (searchInput && searchInput.value.trim() !== "") ||
+                           (filterUf && filterUf.value !== "todos") ||
+                           (filterTipo && filterTipo.value !== "todos") ||
+                           (filterCategoria && filterCategoria.value !== "todos");
+
+    // Na primeira página sem filtros ativos: renderiza Super Destaque (0), 4 Intermediários (1..4) e Lista do Acervo (5..)
+    if (state.currentPage === 1 && !temFiltroAtivo && totalItens >= 5) {
+      resultsCount.textContent = `${totalItens} homenagens catalogadas no acervo oficial`;
+
+      // 1. SUPER DESTAQUE (Item 0 - O mais recente)
+      const superHero = state.filteredRecords[0];
+      const fotoHero = superHero.url_foto && superHero.url_foto.trim() !== "" ? superHero.url_foto : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='180' viewBox='0 0 140 180'%3E%3Crect width='140' height='180' fill='%231E293B'/%3E%3Cpath d='M70 45a20 20 0 1 0 0 40 20 20 0 0 0 0-40zm0 55c-28 0-48 20-48 40h96c0-20-20-40-48-40z' fill='%2394A3B8'/%3E%3C/svg%3E";
+
+      const heroElement = document.createElement("article");
+      heroElement.className = "memorial-card-super-hero";
+      heroElement.tabIndex = 0;
+      heroElement.innerHTML = `
+        <div class="super-hero-badge-area">
+          <span class="badge-super-destaque">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Homenagem em Destaque Principal
+          </span>
+          <span class="badge-uf">${escapeHTML(superHero.estado_uf || "BR")}</span>
+        </div>
+        <div class="super-hero-body">
+          <div class="super-hero-portrait">
+            <img src="${escapeHTML(fotoHero)}" alt="Retrato de ${escapeHTML(superHero.nome_homenageado)}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'140\\' height=\\'180\\' viewBox=\\'0 0 140 180\\'%3E%3Crect width=\\'140\\' height=\\'180\\' fill=\\'%231E293B\\'/%3E%3Cpath d=\\'M70 45a20 20 0 1 0 0 40 20 20 0 0 0 0-40zm0 55c-28 0-48 20-48 40h96c0-20-20-40-48-40z\\' fill=\\'%2394A3B8\\'/%3E%3C/svg%3E';">
+          </div>
+          <div class="super-hero-info">
+            <span class="badge-tipo" style="font-size:0.85rem;">${escapeHTML(superHero.tipo_nota || "Nota Oficial")} &bull; ${escapeHTML(superHero.categoria_atuacao || "Sociedade")}</span>
+            <h2 class="super-hero-title">${escapeHTML(superHero.nome_homenageado)}</h2>
+            <div class="super-hero-source">${escapeHTML(superHero.instituicao_fonte)}</div>
+            <div class="dates-row" style="font-size:0.875rem; color:var(--text-muted);">
+              <span>Data do Passamento: ${formatarData(superHero.data_falecimento)}</span>
+            </div>
+            <p class="super-hero-summary">${escapeHTML(superHero.resumo_homenagem)}</p>
+          </div>
+        </div>
+        <div class="super-hero-footer">
+          <span style="font-size:0.8125rem; color:var(--text-muted);">Registro catalogado em ${formatarData(superHero.data_publicacao)}</span>
+          <button class="btn-read-more" type="button" aria-label="Ler homenagem solene completa">Ler Homenagem Completa &rarr;</button>
+        </div>
+      `;
+      heroElement.querySelector(".btn-read-more").addEventListener("click", () => {
+        if (superHero.url_materia) {
+          window.location.href = superHero.url_materia;
+        } else {
+          abrirModal(superHero);
+        }
+      });
+      memorialGrid.appendChild(heroElement);
+
+      // 2. GRADE DE 4 DESTAQUES INTERMEDIÁRIOS (Itens 1 a 4)
+      const subHeader = document.createElement("h2");
+      subHeader.className = "section-subdestaques-title";
+      subHeader.textContent = "Homenagens Recentes e Registros Institucionais";
+      memorialGrid.appendChild(subHeader);
+
+      const quatroSecundarios = state.filteredRecords.slice(1, 5);
+      quatroSecundarios.forEach(record => {
+        const card = document.createElement("article");
+        card.className = "memorial-card";
+        card.tabIndex = 0;
+        const fotoUrl = record.url_foto && record.url_foto.trim() !== "" ? record.url_foto : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='120' viewBox='0 0 100 120'%3E%3Crect width='100' height='120' fill='%231E293B'/%3E%3Cpath d='M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z' fill='%2394A3B8'/%3E%3C/svg%3E";
+
+        card.innerHTML = `
+          <div class="card-header-bar">
+            <span class="badge-tipo">${escapeHTML(record.tipo_nota || "Nota Pública")}</span>
+            <span class="badge-uf">${escapeHTML(record.estado_uf || "BR")}</span>
+          </div>
+          <div class="card-body">
+            <div class="portrait-wrapper">
+              <img class="portrait-img" src="${escapeHTML(fotoUrl)}" alt="Retrato de ${escapeHTML(record.nome_homenageado)}" loading="lazy" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'100\\' height=\\'120\\' viewBox=\\'0 0 100 120\\'%3E%3Crect width=\\'100\\' height=\\'120\\' fill=\\'%231E293B\\'/%3E%3Cpath d=\\'M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z\\' fill=\\'%2394A3B8\\'/%3E%3C/svg%3E';">
+            </div>
+            <div class="card-info">
+              <h3 class="honoree-name" style="font-size:1.15rem;">${escapeHTML(record.nome_homenageado)}</h3>
+              <div class="source-institution">${escapeHTML(record.instituicao_fonte)}</div>
+              <div class="dates-row">
+                <span>Falecimento: ${formatarData(record.data_falecimento)}</span>
+              </div>
+              <p class="card-summary">${escapeHTML(record.resumo_homenagem)}</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-read-more" type="button" aria-label="Ler homenagem a ${escapeHTML(record.nome_homenageado)}">Ler Homenagem</button>
+          </div>
+        `;
+        card.querySelector(".btn-read-more").addEventListener("click", () => {
+          if (record.url_materia) {
+            window.location.href = record.url_materia;
+          } else {
+            abrirModal(record);
+          }
+        });
+        memorialGrid.appendChild(card);
+      });
+
+      // 3. LISTA PAGINADA DO ACERVO HISTÓRICO (Itens 5 em diante)
+      const itensRestantes = state.filteredRecords.slice(5);
+      if (itensRestantes.length > 0) {
+        const acervoSection = document.createElement("section");
+        acervoSection.className = "section-acervo-lista";
+        acervoSection.innerHTML = `
+          <div class="acervo-lista-header">
+            <h2 class="acervo-lista-title">Acervo Histórico de Homenagens</h2>
+            <span style="font-size:0.875rem; color:var(--text-muted);">${itensRestantes.length} registros no acervo corrido</span>
+          </div>
+          <div class="acervo-table-container">
+            ${itensRestantes.slice(0, 10).map(item => `
+              <div class="acervo-row-item">
+                <div class="acervo-row-main">
+                  <div class="acervo-row-badges">
+                    <span class="badge-tipo">${escapeHTML(item.tipo_nota || "Nota")}</span>
+                    <span class="badge-uf">${escapeHTML(item.estado_uf || "BR")}</span>
+                    <span style="color:var(--text-muted);">&bull; ${formatarData(item.data_falecimento)}</span>
+                  </div>
+                  <div class="acervo-row-name" data-id="${escapeHTML(item.id)}">${escapeHTML(item.nome_homenageado)}</div>
+                  <div class="acervo-row-institution">${escapeHTML(item.instituicao_fonte)} &bull; ${escapeHTML(item.categoria_atuacao || "Sociedade")}</div>
+                </div>
+                <div class="acervo-row-action">
+                  <button class="btn-read-more btn-read-row" data-id="${escapeHTML(item.id)}" type="button" style="padding:6px 14px; font-size:0.8125rem;">Ler Registro &rarr;</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+        acervoSection.querySelectorAll(".btn-read-row, .acervo-row-name").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const id = e.currentTarget.getAttribute("data-id");
+            const item = state.filteredRecords.find(r => r.id === id);
+            if (item) abrirModal(item);
+          });
+        });
+
+        memorialGrid.appendChild(acervoSection);
+      }
+
+      if (paginationNav) {
+        const totalPaginasAcervo = Math.ceil(itensRestantes.length / 10) || 1;
+        renderizarControlesPaginacao(totalPaginasAcervo);
+      }
+      return;
+    }
+
+    // Comportamento quando filtros de busca estão ativos ou paginação > 1
+    const totalPaginas = Math.ceil(totalItens / state.itemsPerPage) || 1;
+    if (state.currentPage > totalPaginas) state.currentPage = totalPaginas;
+    resultsCount.textContent = `${totalItens} registro(s) encontrado(s) • Página ${state.currentPage} de ${totalPaginas}`;
+
     const inicio = (state.currentPage - 1) * state.itemsPerPage;
     const fim = inicio + state.itemsPerPage;
     const registrosPagina = state.filteredRecords.slice(inicio, fim);
@@ -293,10 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article");
       card.className = "memorial-card";
       card.tabIndex = 0;
-
-      const fotoUrl = record.url_foto && record.url_foto.trim() !== "" 
-        ? record.url_foto 
-        : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='120' viewBox='0 0 100 120'%3E%3Crect width='100' height='120' fill='%231E293B'/%3E%3Cpath d='M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z' fill='%2394A3B8'/%3E%3C/svg%3E";
+      const fotoUrl = record.url_foto && record.url_foto.trim() !== "" ? record.url_foto : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='120' viewBox='0 0 100 120'%3E%3Crect width='100' height='120' fill='%231E293B'/%3E%3Cpath d='M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z' fill='%2394A3B8'/%3E%3C/svg%3E";
 
       card.innerHTML = `
         <div class="card-header-bar">
@@ -320,12 +459,13 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="btn-read-more" type="button" aria-label="Ler homenagem completa a ${escapeHTML(record.nome_homenageado)}">Ler Homenagem</button>
         </div>
       `;
-
-      card.querySelector(".btn-read-more").addEventListener("click", () => abrirModal(record));
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") abrirModal(record);
-      });
-
+      card.querySelector(".btn-read-more").addEventListener("click", () => {
+          if (record.url_materia) {
+            window.location.href = record.url_materia;
+          } else {
+            abrirModal(record);
+          }
+        });
       memorialGrid.appendChild(card);
     });
 
