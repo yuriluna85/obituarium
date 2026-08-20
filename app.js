@@ -188,11 +188,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Funcao para ordenar registros do mais recente ao mais antigo
   function ordenarRegistrosCronologico(lista) {
-    return [...lista].sort((a, b) => {
+    // Separa homenagens com páginas HTML geradas das mineradas brutas
+    const curadasComPagina = lista.filter(r => r.url_materia && r.url_materia.trim() !== "");
+    const mineradasSemPagina = lista.filter(r => !r.url_materia || r.url_materia.trim() === "");
+
+    const ordenarPorData = (a, b) => {
       const dataA = a.data_publicacao || a.data_coleta || a.data_falecimento || "1970-01-01 00:00:00";
       const dataB = b.data_publicacao || b.data_coleta || b.data_falecimento || "1970-01-01 00:00:00";
       return dataB.localeCompare(dataA);
-    });
+    };
+
+    curadasComPagina.sort(ordenarPorData);
+    mineradasSemPagina.sort(ordenarPorData);
+
+    // As curadas com páginas HTML ocupam o Super Destaque (0) e os 4 Cards (1..4)
+    return [...curadasComPagina, ...mineradasSemPagina];
   }
 
   // Carregamento de dados com fallback e ordenacao cronologica
