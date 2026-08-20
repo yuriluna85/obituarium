@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
   
+  <!-- Favicon e Identidade Visual -->
+  <link rel="icon" type="image/svg+xml" href="{{CAMINHO_RAIZ}}assets/img/favicon.svg">
   <link rel="stylesheet" href="{{CAMINHO_RAIZ}}style.css">
   <style>
     .memorial-page-container {
@@ -120,7 +122,7 @@
   <!-- Cabecalho Institucional -->
   <header class="site-header" role="banner">
     <div class="header-container" style="max-width: 1200px; margin: 0 auto; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-      <a href="{{CAMINHO_RAIZ}}index.html" class="brand-title" style="text-decoration: none; font-size: 1.25rem; color: #FFFFFF;">OBITUARIUM</a>
+      <a href="{{CAMINHO_RAIZ}}index.html" style="text-decoration: none; display: flex; align-items: center;"><img src="{{CAMINHO_RAIZ}}assets/img/logo_obituarium.svg" alt="Obituarium" style="height: 38px; width: auto;"></a>
       <a href="{{CAMINHO_RAIZ}}index.html" class="btn-read-more" style="text-decoration: none; padding: 6px 14px; font-size: 0.8125rem;">&larr; Voltar ao Acervo</a>
     </div>
   </header>
@@ -165,7 +167,7 @@
       <h3>Fonte Original e Transparência Memorial</h3>
       <ul>
         <li><strong>Instituição Emissora:</strong> {{INSTITUICAO}}</li>
-        <li><strong>Acesso ao Documento na Íntegra:</strong> <a href="{{URL_ORIGINAL}}" target="_blank" rel="noopener noreferrer">{{URL_ORIGINAL}}</a></li>
+        <li><strong>Acesso ao Documento na Íntegra:</strong> <a href="{{URL_ORIGINAL}}" target="_blank" rel="noopener noreferrer">Acessar nota oficial em {{INSTITUICAO}} &rarr;</a></li>
         <li><strong>Data de Catalogação:</strong> {{DATA_PUBLICACAO}}</li>
       </ul>
     </div>

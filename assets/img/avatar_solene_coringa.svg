@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" width="200" height="240">
+  <defs>
+    <linearGradient id="avatarBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7F1135"/>
+      <stop offset="50%" stop-color="#B45309"/>
+      <stop offset="100%" stop-color="#7F1135"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Moldura Solene -->
+  <rect width="200" height="240" rx="8" fill="url(#avatarBg)"/>
+  <rect x="4" y="4" width="192" height="232" rx="6" fill="none" stroke="url(#borderGrad)" stroke-width="2" stroke-dasharray="8 4"/>
+  
+  <!-- Silhueta Clássica Gravada -->
+  <!-- Cabeça / Busto -->
+  <circle cx="100" cy="85" r="38" fill="#334155"/>
+  <path d="M100 50 C80 50 64 66 64 85 C64 96 70 106 80 114 C50 128 35 158 35 200 L165 200 C165 158 150 128 120 114 C130 106 136 96 136 85 C136 66 120 50 100 50 Z" fill="#475569"/>
+  
+  <!-- Ramos de Louro / Tributo Sutil -->
+  <path d="M50 180 C40 150 45 120 60 100" fill="none" stroke="#B45309" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <path d="M150 180 C160 150 155 120 140 100" fill="none" stroke="#B45309" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  
+  <!-- Ramo Inferior de Homenagem -->
+  <circle cx="100" cy="180" r="3" fill="#B45309"/>
+  <path d="M90 180 Q100 175 110 180" fill="none" stroke="#B45309" stroke-width="1.5"/>
+</svg>

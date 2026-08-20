@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 1. SUPER DESTAQUE (Item 0 - O mais recente)
       const superHero = state.filteredRecords[0];
-      const fotoHero = superHero.url_foto && superHero.url_foto.trim() !== "" ? superHero.url_foto : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='180' viewBox='0 0 140 180'%3E%3Crect width='140' height='180' fill='%231E293B'/%3E%3Cpath d='M70 45a20 20 0 1 0 0 40 20 20 0 0 0 0-40zm0 55c-28 0-48 20-48 40h96c0-20-20-40-48-40z' fill='%2394A3B8'/%3E%3C/svg%3E";
+      const fotoHero = superHero.url_foto && superHero.url_foto.trim() !== "" ? superHero.url_foto : "assets/img/avatar_solene_coringa.svg";
 
       const heroElement = document.createElement("article");
       heroElement.className = "memorial-card-super-hero";
@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const card = document.createElement("article");
         card.className = "memorial-card";
         card.tabIndex = 0;
-        const fotoUrl = record.url_foto && record.url_foto.trim() !== "" ? record.url_foto : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='120' viewBox='0 0 100 120'%3E%3Crect width='100' height='120' fill='%231E293B'/%3E%3Cpath d='M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z' fill='%2394A3B8'/%3E%3C/svg%3E";
+        const fotoUrl = record.url_foto && record.url_foto.trim() !== "" ? record.url_foto : "assets/img/avatar_solene_coringa.svg";
 
         card.innerHTML = `
           <div class="card-header-bar">
@@ -445,7 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = document.createElement("article");
       card.className = "memorial-card";
       card.tabIndex = 0;
-      const fotoUrl = record.url_foto && record.url_foto.trim() !== "" ? record.url_foto : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='120' viewBox='0 0 100 120'%3E%3Crect width='100' height='120' fill='%231E293B'/%3E%3Cpath d='M50 30a15 15 0 1 0 0 30 15 15 0 0 0 0-30zm0 40c-20 0-35 15-35 30h70c0-15-15-30-35-30z' fill='%2394A3B8'/%3E%3C/svg%3E";
+      const fotoUrl = record.url_foto && record.url_foto.trim() !== "" ? record.url_foto : "assets/img/avatar_solene_coringa.svg";
 
       card.innerHTML = `
         <div class="card-header-bar">

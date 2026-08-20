@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 80" width="420" height="80">
+  <defs>
+    <linearGradient id="logoBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7F1135"/>
+      <stop offset="100%" stop-color="#4A0B1E"/>
+    </linearGradient>
+    <linearGradient id="logoGold" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#B45309"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#FCD34D"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Símbolo: Monólito Memorial + Chama -->
+  <g transform="translate(10, 10)">
+    <rect width="60" height="60" rx="12" fill="url(#logoBgGrad)" stroke="#B45309" stroke-width="2"/>
+    <path d="M30 12 C18 12 11 20 11 30 C11 40 18 48 30 48 C42 48 49 40 49 30 C49 20 42 12 30 12 Z M30 43 C23 43 18 37 18 30 C18 23 23 17 30 17 C37 17 42 23 42 30 C42 37 37 43 30 43 Z" fill="#F8FAFC"/>
+    <path d="M30 20 C30 20 25 26 25 31 C25 34.5 27.2 37 30 37 C32.8 37 35 34.5 35 31 C35 26 30 20 30 20 Z" fill="url(#logoGold)"/>
+    <circle cx="30" cy="31" r="2" fill="#FFFBEB"/>
+  </g>
+  
+  <!-- Tipografia Institucional -->
+  <text x="86" y="44" font-family="'Merriweather', Georgia, serif" font-size="28" font-weight="700" fill="#FFFFFF" letter-spacing="3">OBITUARIUM</text>
+  <text x="88" y="60" font-family="'Space Mono', -apple-system, monospace" font-size="9" font-weight="700" fill="#B45309" letter-spacing="2">MEMÓRIA PÚBLICA &amp; CIDADANIA</text>
+</svg>

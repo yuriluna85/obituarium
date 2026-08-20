@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7F1135"/>
+      <stop offset="100%" stop-color="#4A0B1E"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#B45309"/>
+      <stop offset="50%" stop-color="#D97706"/>
+      <stop offset="100%" stop-color="#FCD34D"/>
+    </linearGradient>
+  </defs>
+  <!-- Fundo Redondo Bordô Nobre -->
+  <rect width="64" height="64" rx="14" fill="url(#bgGrad)" stroke="#B45309" stroke-width="2"/>
+  
+  <!-- Letra O Serifada Monumental -->
+  <path d="M32 10 C20 10 12 19 12 32 C12 45 20 54 32 54 C44 54 52 45 52 32 C52 19 44 10 32 10 Z M32 48 C24 48 19 41 19 32 C19 23 24 16 32 16 C40 16 45 23 45 32 C45 41 40 48 32 48 Z" fill="#F8FAFC"/>
+  
+  <!-- Chama Perpétua Dourada Central -->
+  <path d="M32 20 C32 20 27 27 27 33 C27 36.5 29.2 39 32 39 C34.8 39 37 36.5 37 33 C37 27 32 20 32 20 Z" fill="url(#goldGrad)"/>
+  <circle cx="32" cy="33" r="2.5" fill="#FFFBEB"/>
+</svg>
